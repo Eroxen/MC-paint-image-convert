@@ -106,6 +106,8 @@ function clamp(value, min, max) {
 
 var BLOCK_WIDTH = clamp(document.getElementById("width-blocks").value, 1, 4);
 var BLOCK_HEIGHT = clamp(document.getElementById("height-blocks").value, 1, 2);
+var PIXEL_WIDTH = 0;
+var PIXEL_HEIGHT = 0;
 var IMAGE_DATA = [];
 
 function changeBlockSize() {
@@ -147,7 +149,8 @@ function split_long_string(string, max_length=256) {
     return split_strings;
 }
 
-function copyPaintingCode(text) {
+function copyPaintingCode(event) {
+    text = event.target.parentElement.parentElement.children[1].innerHTML;
     navigator.clipboard.writeText(text);
 }
 
@@ -155,13 +158,14 @@ function calculate_painting_code() {
     // header encoding
     const encoder = new TextEncoder();
     var header_bytes = Array.from(encoder.encode("MCPPF1")); // MC Paint Painting Format 1
-    console.log(header_bytes);
-    header_bytes = header_bytes.concat([BLOCK_WIDTH - 1, BLOCK_HEIGHT - 1, this.width - 1, this.height - 1]);
+    // console.log(header_bytes);
+    header_bytes = header_bytes.concat([BLOCK_WIDTH - 1, BLOCK_HEIGHT - 1, PIXEL_WIDTH - 1, PIXEL_HEIGHT - 1]);
     header_bytes = header_bytes.concat([0, 0]) // Length of author and painting title in bytes, 0 for now because I haven't implemented that yet
 
+    console.log(IMAGE_DATA)
     b64_encoded_string = base64ArrayBuffer(header_bytes.concat(IMAGE_DATA));
 
-    console.log(b64_encoded_string);
+    // console.log(b64_encoded_string);
     set_code_output_list(split_long_string(b64_encoded_string));
 
 }
@@ -172,7 +176,7 @@ function set_code_output_list(elements) {
     list.innerHTML = "";
     for (let i = 0; i < elements.length; i++) {
         element = elements[i];
-        console.log(element);
+        // console.log(element);
         var li = document.createElement("li");
 
         var button_div = document.createElement("div");
@@ -182,9 +186,8 @@ function set_code_output_list(elements) {
 
         var button = document.createElement("button");
         button.innerHTML = "Copy<br>" + (i+1) + "/" + elements.length;
-        button.addEventListener("click", function() {
-            copyPaintingCode(element);
-        });
+        button.addEventListener("click", copyPaintingCode);
+        // button.onclick = 'console.log("hello");';
         button_div.appendChild(button);
 
         text_div.appendChild(document.createTextNode(element));
@@ -218,7 +221,7 @@ function segment_to_bytes(segment) {
 }
 
 async function handleImage(event) {
-    console.log("hello console");
+    // console.log("hello console");
     var file = event.target.files[0];
     console.log("uploaded " + file.size + " byte file");
 
@@ -236,6 +239,8 @@ async function handleImage(event) {
                 alert("Image dimensions must not exceed 64x64 pixels.");
                 return;
             }
+            PIXEL_WIDTH = this.width;
+            PIXEL_HEIGHT = this.height;
             document.getElementById("uploaded-img-preview").src = src;
 
             var canvas = document.getElementById("upload-canvas");
@@ -256,12 +261,13 @@ async function handleImage(event) {
                         segment_length++;
                     } else {
                         image_bytes = image_bytes.concat(segment_to_bytes([segment_colour, segment_length]));
-                        //console.log(segment_colour + " * " + segment_length);
+                        console.log(segment_colour + " * " + segment_length);
                         segment_colour = pixel_colour;
                         segment_length = 1;
                     }
                 }
             }
+            console.log(segment_colour + " * " + segment_length);
             IMAGE_DATA = image_bytes.concat(segment_to_bytes([segment_colour, segment_length]));
             calculate_painting_code();
         }
