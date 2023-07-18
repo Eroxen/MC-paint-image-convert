@@ -74,8 +74,8 @@
 
   .input-image-container{
     margin: 10px auto;
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 250px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -90,4 +90,21 @@
     border-width: 2px;
     border-color: #a1a1a1;
     /* background-size: 100% 100%; */
+  }
+
+  .block-size-input{
+    display: inline-block;
+    padding: 5px;
+    width: 45%;
+  }
+
+  .block-size-input label{
+    display: flex;
+    float: left;
+  }
+
+  .block-size-input input{
+    display: flex;
+    width: 70px;
+    float: right;
   }
