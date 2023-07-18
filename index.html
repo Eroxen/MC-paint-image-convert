@@ -7,6 +7,8 @@
 <script>   
 function handleImage(event) {
     console.log("hello console");
+    var file = event.target.files[0];
+    console.log("uploaded " + file.size + " byte file");
 }
 </script>
 
