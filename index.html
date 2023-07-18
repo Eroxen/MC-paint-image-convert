@@ -1,12 +1,24 @@
 <!DOCTYPE html>
-<html>
-<body>
+<html lang="en" dir="ltr">
 
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width-device-width, initial-scale-1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>MC Paint image converter</title>
+</head>
+
+<body>
 <canvas id="upload-canvas" width="64", height="64" hidden></canvas>
 
-<input id="image-upload" type="file" accept="image/*" onchange="handleImage(event);">
+<div class="central-column">
+    <div class="input-box">
+        <input id="image-upload" type="file" accept="image/*" onchange="handleImage(event);">
+    </div>
 
-<ul id="painting-code-output"></ul>
+
+    <ul class="copyable-code-list" id="painting-code-output" hidden></ul>
+</div>
 
 <script>
 // Converts an ArrayBuffer directly to base64, without any intermediate 'convert to string then
@@ -115,22 +127,32 @@ function copyPaintingCode(text) {
 
 function set_code_output_list(elements) {
     const list = document.getElementById("painting-code-output");
+    list.hidden = false;
     list.innerHTML = "";
-    elements.forEach(element => {
+    for (let i = 0; i < elements.length; i++) {
+        element = elements[i];
         console.log(element);
         var li = document.createElement("li");
 
+        var button_div = document.createElement("div");
+        button_div.className = "copy-li-div-button";
+        var text_div = document.createElement("div");
+        text_div.className = "copy-li-div-text";
+
         var button = document.createElement("button");
-        button.innerHTML = "Copy";
+        button.innerHTML = "Copy<br>" + (i+1) + "/" + elements.length;
         button.addEventListener("click", function() {
             copyPaintingCode(element);
         });
-        li.appendChild(button);
+        button_div.appendChild(button);
 
-        li.appendChild(document.createTextNode(element));
+        text_div.appendChild(document.createTextNode(element));
+
+        li.appendChild(button_div);
+        li.appendChild(text_div);
 
         list.appendChild(li);
-    });
+    };
 }
 
 function segment_to_bytes(segment) {

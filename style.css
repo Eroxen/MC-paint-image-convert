@@ -1,0 +1,73 @@
+*{
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    line-break: anywhere;
+  }
+
+  ul.copyable-code-list{
+    max-width: 100%;
+    margin: 10px auto;
+    padding: 10px;
+    list-style-type: none;
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 3px;
+    border-color: #a1a1a1;
+  }
+
+  ul.copyable-code-list > li{
+    background-color: rgb(242, 242, 242);
+    margin: 10px;
+    justify-content: center;
+    font-family: "Lucida Console", "Courier New", monospace;
+  }
+
+  .copy-li-div-button{
+    width: 80px;
+    vertical-align: top;
+    display: inline-block;
+  }
+
+  .copy-li-div-button button{
+    margin: 10px;
+    width: 60px;
+    height: 60px;
+  }
+
+  .copy-li-div-text{
+    width: -webkit-calc(100% - 110px);
+    width:    -moz-calc(100% - 110px);
+    width:         calc(100% - 110px);
+    display: inline-block;
+    margin: 5px;
+    padding: 5px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 5px;
+    border-color: gray;
+    border-style: solid;
+    border-width: 1px;
+  }
+
+  .central-column{
+    margin: auto;
+    margin-top: 50px;
+    max-width: 800px;
+  }
+
+  .input-box{
+    margin: auto;
+    max-width: 300px;
+    justify-content: center;
+    border-radius: 10px;
+    border-style: solid;
+    border-width: 3px;
+    border-color: #a1a1a1;
+    padding: 10px;
+  }
+
+  .input-box input{
+    box-sizing: border-box;
+    display: block;
+    margin: auto;
+  }
