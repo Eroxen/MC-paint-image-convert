@@ -2,7 +2,7 @@
 <html>
 <body>
 
-<canvas id="upload-canvas" width="64", height="64"></canvas>
+<canvas id="upload-canvas" width="64", height="64" hidden></canvas>
 
 <input id="image-upload" type="file" accept="image/*" onchange="handleImage(event);">
 
@@ -108,13 +108,27 @@ function split_long_string(string, max_length=256) {
     return split_strings;
 }
 
+function copyPaintingCode(text) {
+    console.log("button clicked." + text);
+    navigator.clipboard.writeText(text);
+}
+
 function set_code_output_list(elements) {
     const list = document.getElementById("painting-code-output");
     list.innerHTML = "";
     elements.forEach(element => {
         console.log(element);
         var li = document.createElement("li");
+
+        var button = document.createElement("button");
+        button.innerHTML = "Copy";
+        button.addEventListener("click", function() {
+            copyPaintingCode(element);
+        });
+        li.appendChild(button);
+
         li.appendChild(document.createTextNode(element));
+
         list.appendChild(li);
     });
 }
