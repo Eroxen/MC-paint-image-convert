@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width-device-width, initial-scale-1.0">
+    <link rel="stylesheet" href="style/scene.css">
+    <title>MC Paint image converter</title>
+</head>
+
+<body>
+
+    
+
+    <div id="scene_container">
+        <p id="upload_hint">Click or drag and drop to upload an image.</p>
+        <input id="scene_image_upload" type="file" accept="image/*" onchange="upload_image(event);">
+        <img src="../img/scene.png">
+        <div id="scene_canvas_container_align">
+            <div id="scene_canvas_container">
+                <canvas class="scene_canvas" id="scene_canvas_background" width="16", height="16"></canvas>
+                <canvas class="scene_canvas" id="scene_canvas_ink" width="16", height="16"></canvas>
+            </div>
+        </div>
+        <div id="scene_size_buttons_align">
+            <div class="scene_size_button_container" style="right:50%;">
+                <p class="scene_size_name">Width</p>
+                <div class="scene_size_button_container_inner">
+                    <button style="left:0;" type="button" class="scene_size_button", onclick="click_block_size_button(-1, 0)">-</button>
+                    <p class="scene_size_value" id="scene_size_value_width">1</p>
+                    <button style="right:0;" type="button" class="scene_size_button", onclick="click_block_size_button(1, 0)">+</button>
+                </div>
+            </div>
+            <div class="scene_size_button_container" style="left:50%;">
+                <p class="scene_size_name">Height</p>
+                <div class="scene_size_button_container_inner">
+                    <button style="left:0;" type="button" class="scene_size_button", onclick="click_block_size_button(0, -1)">-</button>
+                    <p class="scene_size_value" id="scene_size_value_height">1</p>
+                    <button style="right:0;" type="button" class="scene_size_button", onclick="click_block_size_button(0, 1)">+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p>hello</p>
+
+    <script src="scripts/mcpaint_image.js"></script>
+    <script src="scripts/base64_helpers.js"></script>
+    <script src="scripts/base64ArrayBuffer.js"></script>
+    <script src="scripts/preview_scene.js"></script>
+
+</body>
