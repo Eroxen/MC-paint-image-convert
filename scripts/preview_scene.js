@@ -14,16 +14,19 @@ async function upload_image(event) {
     let img = new Image();
     img.src = base64;
     img.onload = function() {
-        if (this.width > 64 || this.height > 64) {
-            alert("Image dimensions must not exceed 64x64 pixels.");
-            return;
-        }
         let canvas = document.getElementById("scene_canvas_ink");
-        canvas.width = this.width;
-        canvas.height = this.height;
+        if (this.width <= 64 && this.height <= 64) {
+            canvas.width = this.width;
+            canvas.height = this.height;
+        }
+        else {
+            let scale_factor = 64 / Math.max(this.width, this.height);
+            canvas.width = Math.max(Math.min(this.width * scale_factor, 64), 1);
+            canvas.height = Math.max(Math.min(this.height * scale_factor, 64), 1);
+        }
         var ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(this, 0, 0);
+        ctx.drawImage(this, 0, 0, this.width, this.height, 0, 0, canvas.width, canvas.height);
 
         // project to lower colour resolution
         for (let i = 0; i < canvas.height; i++) {
