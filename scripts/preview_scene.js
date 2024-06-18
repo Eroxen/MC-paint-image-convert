@@ -20,9 +20,12 @@ async function upload_image(event) {
             canvas.height = this.height;
         }
         else {
-            let scale_factor = 64 / Math.max(this.width, this.height);
-            canvas.width = Math.max(Math.min(this.width * scale_factor, 64), 1);
-            canvas.height = Math.max(Math.min(this.height * scale_factor, 64), 1);
+            let scale_factor = 64.0 / Math.max(this.width, this.height);
+            console.log(this.width * scale_factor);
+            console.log(this.height * scale_factor);
+            canvas.width = Math.max(Math.min(Math.round(this.width * scale_factor), 64), 1);
+            canvas.height = Math.max(Math.min(Math.round(this.height * scale_factor), 64), 1);
+            console.log("Adjusted canvas size: " + canvas.width + "x" + canvas.height);
         }
         var ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, canvas.width, canvas.height);
