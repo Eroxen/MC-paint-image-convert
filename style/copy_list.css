@@ -1,0 +1,76 @@
+#copy_container {
+    margin: auto;
+    position: relative;
+    max-width: 600px;
+}
+
+#copy_code_list {
+    max-width: 100%;
+    margin: 0px auto;
+    padding: 10px 0;
+    list-style-type: none;
+    border-radius: 10px;
+}
+
+#copy_code_list li {
+    background-color: rgb(242, 242, 242);
+    margin: 0px;
+    justify-content: center;
+    font-family: "Lucida Console", "Courier New", monospace;
+    border-radius: 5px;
+}
+
+.copy_li_div_button{
+    width: 80px;
+    vertical-align: top;
+    display: inline-block;
+}
+
+.copy_li_div_button button{
+    margin: 10px;
+    width: 60px;
+    height: 60px;
+}
+
+.copy_li_div_text{
+    width: -webkit-calc(100% - 110px);
+    width:    -moz-calc(100% - 110px);
+    width:         calc(100% - 110px);
+    display: inline-block;
+    overflow: scroll;
+    text-wrap: nowrap;
+    margin: 15px 5px;
+    padding: 5px;
+    background-color: rgb(255, 255, 255);
+    border-color: gray;
+    border-style: solid;
+    border-width: 1px;
+}
+
+
+
+#copy_mode_button_group button {
+    width: 33.3%;
+    color: black;
+    padding: 10px 24px;
+    cursor: pointer;
+    float: left;
+    margin: 20px 0px 0px 0px;
+}
+
+#copy_mode_button_group button:not(.copy_mode_active) {
+    background-color: gray;
+    border: 1px solid black;
+}
+
+.copy_mode_active {
+    background-color: #e0e0e0;
+    border: 1px solid gray;
+}
+
+/* Clear floats (clearfix hack) */
+#copy_mode_button_group:after {
+    content: "";
+    clear: both;
+    display: table;
+}

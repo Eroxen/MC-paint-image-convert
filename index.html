@@ -4,185 +4,56 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width-device-width, initial-scale-1.0">
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="style/scene.css">
+    <link rel="stylesheet" href="style/copy_list.css">
     <title>MC Paint image converter</title>
 </head>
 
 <body>
-<canvas id="upload-canvas" width="64", height="64" hidden></canvas>
-<canvas id="display-canvas" width="64", height="64"></canvas>
-
-<div class="central-column">
-    <div class="input-box">
-        <input id="image-upload" type="file" accept="image/*" onchange="handleImage(event);">
-        <div class="input-image-container">
-            <img id="uploaded-img-preview" class="input-image" style="background-size: 100% 100%;width: 100%;height: 100%">
-        </div>
-        <div class="metadata-input">
-            <div class="block-size-input">
-                <label for="width-blocks">Width:</label>
-                <input type="number" id="width-blocks" min="1" max="4" value="1" onchange="changeBlockSize()">
+    <div id="scene_container">
+        <p id="upload_hint">Click or drag and drop to upload an image.</p>
+        <input id="scene_image_upload" type="file" accept="image/*" onchange="upload_image(event);">
+        <img src="../img/scene.png">
+        <div id="scene_canvas_container_align">
+            <div id="scene_canvas_container">
+                <canvas class="scene_canvas" id="scene_canvas_background" width="16", height="16"></canvas>
+                <canvas class="scene_canvas" id="scene_canvas_ink" width="16", height="16"></canvas>
             </div>
-            <div class="block-size-input">
-                <label for="height-blocks">Height:</label>
-                <input type="number" id="height-blocks" min="1" max="2" value="1" onchange="changeBlockSize()">
+        </div>
+        <div id="scene_size_buttons_align">
+            <div class="scene_size_button_container" style="right:50%;">
+                <p class="scene_size_name">Width</p>
+                <div class="scene_size_button_container_inner">
+                    <button style="left:0;" type="button" class="scene_size_button", onclick="click_block_size_button(-1, 0)">-</button>
+                    <p class="scene_size_value" id="scene_size_value_width">1</p>
+                    <button style="right:0;" type="button" class="scene_size_button", onclick="click_block_size_button(1, 0)">+</button>
+                </div>
+            </div>
+            <div class="scene_size_button_container" style="left:50%;">
+                <p class="scene_size_name">Height</p>
+                <div class="scene_size_button_container_inner">
+                    <button style="left:0;" type="button" class="scene_size_button", onclick="click_block_size_button(0, -1)">-</button>
+                    <p class="scene_size_value" id="scene_size_value_height">1</p>
+                    <button style="right:0;" type="button" class="scene_size_button", onclick="click_block_size_button(0, 1)">+</button>
+                </div>
             </div>
         </div>
     </div>
 
 
-    <ul class="copyable-code-list" id="painting-code-output" hidden></ul>
+    <div id="copy_container" hidden>
+        <div id="copy_mode_button_group">
+            <button class="copy_mode_active" onclick="click_copy_mode_button(this, 'survival')">Survival</button>
+            <button onclick="click_copy_mode_button(this, 'cheats_nbt')">Cheats (<1.20.4)</button>
+            <button onclick="click_copy_mode_button(this, 'cheats_components')">Cheats (>1.20.5)</button>
+        </div>
+        <ul id="copy_code_list" ></ul>
+    </div>
 
-    <ul class="copyable-code-list" id="cheat-code-output" hidden></ul>
-</div>
-
-<script src="scripts/base64ArrayBuffer.js"></script>
-<script src="scripts/mcpaint_image.js"></script>
-<script src="scripts/base64_helpers.js"></script>
-
-<script>
-function clamp(value, min, max) {
-    return Math.max(min, Math.min(value, max));
-}
-
-var BLOCK_WIDTH = clamp(document.getElementById("width-blocks").value, 1, 4);
-var BLOCK_HEIGHT = clamp(document.getElementById("height-blocks").value, 1, 2);
-var PIXEL_WIDTH = 0;
-var PIXEL_HEIGHT = 0;
-var IMAGE_DATA = [];
-
-function changeBlockSize() {
-    BLOCK_WIDTH = clamp(document.getElementById("width-blocks").value, 1, 4);
-    BLOCK_HEIGHT = clamp(document.getElementById("height-blocks").value, 1, 2);
-    document.getElementById("uploaded-img-preview").style = "background-size: " + 100 / BLOCK_WIDTH + "% " + 100 / BLOCK_HEIGHT + "%;"
-    + "width: " + Math.min(BLOCK_WIDTH/BLOCK_HEIGHT, 1) * 100 + "%;height: " + Math.min(BLOCK_HEIGHT/BLOCK_WIDTH, 1) * 100 + "%";
-    if (IMAGE_DATA.length > 0) {
-        calculate_painting_code();
-    }
-}
-
-
-
-function copyPaintingCode(event) {
-    text = event.target.parentElement.parentElement.children[1].innerHTML;
-    navigator.clipboard.writeText(text);
-}
-
-
-
-function set_code_output_list(elements) {
-    var list = document.getElementById("painting-code-output");
-    list.hidden = false;
-    list.innerHTML = "";
-    for (let i = 0; i < elements.length; i++) {
-        element = elements[i];
-        // console.log(element);
-        var li = document.createElement("li");
-
-        var button_div = document.createElement("div");
-        button_div.className = "copy-li-div-button";
-        var text_div = document.createElement("div");
-        text_div.className = "copy-li-div-text";
-
-        var button = document.createElement("button");
-        button.innerHTML = "Copy<br>" + (i+1) + "/" + elements.length;
-        button.addEventListener("click", copyPaintingCode);
-        // button.onclick = 'console.log("hello");';
-        button_div.appendChild(button);
-
-        text_div.appendChild(document.createTextNode(element));
-
-        li.appendChild(button_div);
-        li.appendChild(text_div);
-
-        list.appendChild(li);
-    };
-
-    var list = document.getElementById("cheat-code-output");
-    list.hidden = false;
-    list.innerHTML = "";
-
-    var li = document.createElement("li");
-
-    var button_div = document.createElement("div");
-    button_div.className = "copy-li-div-button";
-    var text_div = document.createElement("div");
-    text_div.className = "copy-li-div-text";
-
-    var button = document.createElement("button");
-    button.innerHTML = "Copy<br>(cheats)";
-    button.addEventListener("click", copyPaintingCode);
-    button_div.appendChild(button);
-
-    text_div.appendChild(document.createTextNode('give @p minecraft:writable_book{pages:["' + elements.join('","') + '"]}'));
-
-    li.appendChild(button_div);
-    li.appendChild(text_div);
-
-    list.appendChild(li);
-
-
-}
-
-
-
-async function handleImage(event) {
-    // console.log("hello console");
-    var file = event.target.files[0];
-    console.log("uploaded " + file.size + " byte file");
-
-    // base64 canvas data code from:
-    // https://stackoverflow.com/questions/61514128/javascript-get-pixel-data-of-image
-    const base64 = await toBase64(file);
-    console.log(base64)
-
-    const src = base64;
-
-        var img = new Image();
-        img.onload = function () {
-            console.log(this)
-            if (this.width > 64 || this.height > 64) {
-                alert("Image dimensions must not exceed 64x64 pixels.");
-                return;
-            }
-            PIXEL_WIDTH = this.width;
-            PIXEL_HEIGHT = this.height;
-            document.getElementById("uploaded-img-preview").src = src;
-
-            document.getElementById("display-canvas").getContext("2d").drawImage(img, 0, 0);
-
-            var canvas = document.getElementById("upload-canvas");
-            var ctx = canvas.getContext("2d");
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, 0, 0);
-
-            const max_segment_length = 128;
-            var image_bytes = [];
-            var segment_colour = pixel_value_to_mcpaint_colour(ctx.getImageData(0, 0, 1, 1).data);
-            var segment_length = 0;
-
-            for (let i = 0; i < this.height; i++) {
-                for (let j = 0; j < this.width; j++) {
-                    var pixel_colour = pixel_value_to_mcpaint_colour(ctx.getImageData(j, i, 1, 1).data);
-                    //console.log(pixel_colour);
-                    if (pixel_colour == segment_colour && segment_length < max_segment_length) {
-                        segment_length++;
-                    } else {
-                        image_bytes = image_bytes.concat(segment_to_bytes([segment_colour, segment_length]));
-                        console.log(segment_colour + " * " + segment_length);
-                        segment_colour = pixel_colour;
-                        segment_length = 1;
-                    }
-                }
-            }
-            console.log(segment_colour + " * " + segment_length);
-            IMAGE_DATA = image_bytes.concat(segment_to_bytes([segment_colour, segment_length]));
-            calculate_painting_code();
-        }
-        img.src = src;
-}
-</script>
+    <script src="scripts/mcpaint_image.js"></script>
+    <script src="scripts/base64_helpers.js"></script>
+    <script src="scripts/base64ArrayBuffer.js"></script>
+    <script src="scripts/preview_scene.js"></script>
+    <script src="scripts/copy_list.js"></script>
 
 </body>
-</html>

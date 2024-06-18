@@ -31,6 +31,9 @@ async function upload_image(event) {
                 ctx.putImageData(quantise_ImageData(ctx.getImageData(j, i, 1, 1)), j, i);
             }
         }
+        calculate_mcppf1_header();
+        calculate_mcppf1_body();
+        update_copy_list();
     }
 }
 
@@ -59,6 +62,8 @@ function update_block_size() {
         container.style.left = '0%';
     }
     draw_background();
+    calculate_mcppf1_header();
+    update_copy_list();
 }
 
 function draw_background() {

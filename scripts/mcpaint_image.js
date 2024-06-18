@@ -1,3 +1,6 @@
+var mcppf1_encoded_header = [];
+var mcppf1_encoded_body = [];
+
 function quantise_ImageData(id) {
     let d = id.data;
     d[0] = Math.floor(d[0] / 8) * 8;
@@ -6,7 +9,6 @@ function quantise_ImageData(id) {
     d[3] = d[3] < 128 ? 0 : 255;
     return id;
 }
-
 
 function pixel_value_to_mcpaint_colour(array) {
     if (array[3] < 128) {
@@ -26,8 +28,8 @@ function segment_to_bytes(segment) {
         return [128, 255, length + 128];
     }
 
-    col_byte_1 = Math.floor(colour / 256);
-    col_byte_2 = colour % 256;
+    let col_byte_1 = Math.floor(colour / 256);
+    let col_byte_2 = colour % 256;
 
     // use msb of first colour byte to indicate next byte as length
     if (length > 0) {
@@ -37,18 +39,34 @@ function segment_to_bytes(segment) {
     return [col_byte_1, col_byte_2];
 }
 
-function calculate_painting_code() {
-    // header encoding
+function calculate_mcppf1_header() {
     const encoder = new TextEncoder();
-    var header_bytes = Array.from(encoder.encode("MCPPF1")); // MC Paint Painting Format 1
-    // console.log(header_bytes);
-    header_bytes = header_bytes.concat([BLOCK_WIDTH - 1, BLOCK_HEIGHT - 1, PIXEL_WIDTH - 1, PIXEL_HEIGHT - 1]);
-    header_bytes = header_bytes.concat([0, 0]) // Length of author and painting title in bytes, 0 for now because I haven't implemented that yet
+    mcppf1_encoded_header = Array.from(encoder.encode("MCPPF1"));
+    let canvas = document.getElementById("scene_canvas_ink");
+    mcppf1_encoded_header = mcppf1_encoded_header.concat([block_width - 1, block_height - 1, canvas.width - 1, canvas.height - 1]);
+    mcppf1_encoded_header = mcppf1_encoded_header.concat([0, 0]);
+}
 
-    console.log(IMAGE_DATA)
-    b64_encoded_string = base64ArrayBuffer(header_bytes.concat(IMAGE_DATA));
+function calculate_mcppf1_body() {
+    mcppf1_encoded_body = [];
+    let canvas = document.getElementById("scene_canvas_ink");
+    let ctx = canvas.getContext("2d");
+    const max_segment_length = 128;
+    
+    let segment_colour = pixel_value_to_mcpaint_colour(ctx.getImageData(0, 0, 1, 1).data);
+    let segment_length = 0;
 
-    // console.log(b64_encoded_string);
-    set_code_output_list(split_long_string(b64_encoded_string));
-
+    for (let i = 0; i < canvas.height; i++) {
+        for (let j = 0; j < canvas.width; j++) {
+            let pixel_colour = pixel_value_to_mcpaint_colour(ctx.getImageData(j, i, 1, 1).data);
+            if (pixel_colour == segment_colour && segment_length < max_segment_length) {
+                segment_length++;
+            } else {
+                mcppf1_encoded_body = mcppf1_encoded_body.concat(segment_to_bytes([segment_colour, segment_length]));
+                segment_colour = pixel_colour;
+                segment_length = 1;
+            }
+        }
+    }
+    mcppf1_encoded_body = mcppf1_encoded_body.concat(segment_to_bytes([segment_colour, segment_length]));
 }
