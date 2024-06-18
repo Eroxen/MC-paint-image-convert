@@ -5,11 +5,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width-device-width, initial-scale-1.0">
     <link rel="stylesheet" href="style/scene.css">
-    <link rel="stylesheet" href="style/copy_list.css">
     <title>MC Paint image converter</title>
 </head>
 
 <body>
+
+    
+
     <div id="scene_container">
         <p id="upload_hint">Click or drag and drop to upload an image.</p>
         <input id="scene_image_upload" type="file" accept="image/*" onchange="upload_image(event);">
@@ -40,20 +42,11 @@
         </div>
     </div>
 
-
-    <div id="copy_container" hidden>
-        <div id="copy_mode_button_group">
-            <button class="copy_mode_active" onclick="click_copy_mode_button(this, 'survival')">Survival</button>
-            <button onclick="click_copy_mode_button(this, 'cheats_nbt')">Cheats (<1.20.4)</button>
-            <button onclick="click_copy_mode_button(this, 'cheats_components')">Cheats (>1.20.5)</button>
-        </div>
-        <ul id="copy_code_list" ></ul>
-    </div>
+    <p>hello</p>
 
     <script src="scripts/mcpaint_image.js"></script>
     <script src="scripts/base64_helpers.js"></script>
     <script src="scripts/base64ArrayBuffer.js"></script>
     <script src="scripts/preview_scene.js"></script>
-    <script src="scripts/copy_list.js"></script>
 
 </body>

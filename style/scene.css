@@ -1,0 +1,134 @@
+#scene_container {
+    margin: auto;
+    position: relative;
+    max-width: 600px;
+    border: 1px solid black;
+}
+#scene_container:after {
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+}
+
+#scene_container img {
+    z-index: 1;
+    float: left;
+    position:relative;
+    top:0px;
+    left:0px;
+    width: 100%;
+    height: 100%;
+}
+
+#upload_hint {
+    z-index: 4;
+    position:absolute;
+    top:-20px;
+    left:0px;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    color: white;
+    text-shadow: 1.5px 1.5px black;
+    font-size: 25px;
+    overflow: hidden;
+}
+
+#scene_canvas_ink {
+    z-index: 6;
+}
+
+#scene_container input {
+    z-index: 4;
+    float: left;
+    position:absolute;
+    top:0px;
+    left:0px;
+    width: 100%;
+    height: 83.3%;
+    font-size: 0;
+}
+
+#scene_container input::file-selector-button {
+    display: none;
+}
+
+#scene_canvas_container_align {
+    z-index: 2;
+    position: absolute;
+    top: 16.6%;
+    left: 16.6%; 
+    width: 66.6%;
+    height: 66.6%;
+}
+
+#scene_canvas_container {
+    z-index: 3;
+    position: absolute;
+    bottom: 0%;
+    box-shadow: 1px 1px 20px rgb(42, 31, 19);
+}
+
+#scene_size_buttons_align {
+    z-index: 4;
+    position: absolute;
+    bottom: 0;
+    left: 0; 
+    width: 100%;
+    height: 16.6%;
+    display: flex;
+    vertical-align: middle;
+}
+
+.scene_size_button_container {
+    position: absolute;
+    bottom: 5px;
+    padding: 10px 20px;
+    width: 120px;
+    height: 40px;
+}
+
+.scene_size_button_container p {
+    z-index: 4;
+    position: absolute;
+    top:-17px;
+    left:0px;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    color: white;
+    text-shadow: 1.5px 1.5px black;
+    font-size: 20px;
+    overflow: hidden;
+}
+
+.scene_size_button_container_inner {
+    position: absolute;
+    bottom: 0;
+    background-color: rgb(42, 42, 42);
+    padding: 0;
+    width: 120px;
+    height: 30px;
+}
+
+.scene_size_button {
+    z-index: 5;
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    font-size: 100;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: bold;
+    color: black;
+}
+
+#scene_canvas_container canvas {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    image-rendering: pixelated;
+}
